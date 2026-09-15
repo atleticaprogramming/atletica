@@ -2,13 +2,25 @@
 import * as React from "react";
 import { Wordmark } from "@/components/ui/Logo";
 
-const links = [
+type NavLink = { label: string; href: string };
+
+const defaultLinks: NavLink[] = [
   { label: "Planificaciones", href: "/#programaciones" },
   { label: "Cursos", href: "/#cursos" },
   { label: "Nuestro método", href: "/#metodo" },
 ];
 
-export function Nav({ solid = false }: { solid?: boolean }) {
+const defaultCta: NavLink = { label: "Empezá ahora", href: "/#programaciones" };
+
+export function Nav({
+  solid = false,
+  links = defaultLinks,
+  cta = defaultCta,
+}: {
+  solid?: boolean;
+  links?: NavLink[];
+  cta?: NavLink;
+}) {
   const [scrolled, setScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
@@ -48,10 +60,10 @@ export function Nav({ solid = false }: { solid?: boolean }) {
 
           <div className="flex items-center gap-3">
             <a
-              href="/#programaciones"
+              href={cta.href}
               className="label hidden rounded-full bg-blue px-5 py-2.5 !text-[12px] text-ink transition-all hover:bg-blue/90 sm:inline-block"
             >
-              Empezá ahora
+              {cta.label}
             </a>
             <button
               aria-label="Menú"
@@ -94,11 +106,11 @@ export function Nav({ solid = false }: { solid?: boolean }) {
                 </a>
               ))}
               <a
-                href="/#programaciones"
+                href={cta.href}
                 onClick={() => setOpen(false)}
                 className="label mt-4 rounded-full bg-blue px-5 py-3 text-center text-[0.64rem] text-ink"
               >
-                Empezá ahora
+                {cta.label}
               </a>
             </nav>
           </div>
