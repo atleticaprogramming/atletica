@@ -19,6 +19,9 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
               Atlética · Admin
             </Link>
             <nav className="flex items-center gap-4 text-sm text-ink/70">
+              <Link href="/admin/contenido" className="hover:text-ink">
+                Textos e imágenes
+              </Link>
               <Link href="/admin/cursos" className="hover:text-ink">
                 Cursos
               </Link>
@@ -38,8 +41,9 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
 
       {!hasDb() && (
         <div className="border-b border-amber-200 bg-amber-50 px-5 py-2.5 text-center text-sm text-amber-700">
-          ⚠️ No hay base de datos conectada. Estás viendo el contenido base de
-          solo lectura — los cambios no se guardarán hasta configurar Postgres.
+          {process.env.NODE_ENV === "development"
+            ? "Modo local: textos e imágenes se guardan en este equipo (.content/site.json). Cursos y planificaciones necesitan la base de datos."
+            : "⚠️ No hay base de datos conectada. Los cambios no se guardarán hasta configurar Postgres."}
         </div>
       )}
 

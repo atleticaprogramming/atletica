@@ -3,6 +3,7 @@ import * as React from "react";
 import { Reveal } from "@/components/ui/Reveal";
 import { PlanCard, type Plan } from "@/components/ui/PlanCard";
 import type { PlanData } from "@/lib/types";
+import type { SiteContent } from "@/lib/site/defaults";
 
 const Arrow = ({ dir }: { dir: "left" | "right" }) => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -18,8 +19,10 @@ const Arrow = ({ dir }: { dir: "left" | "right" }) => (
 
 export function OtrasPlanificaciones({
   especiales: data,
+  c,
 }: {
   especiales: PlanData[];
+  c: SiteContent["homeOtras"];
 }) {
   const especiales: Plan[] = data.map((p) => ({
     name: p.name,
@@ -49,11 +52,11 @@ export function OtrasPlanificaciones({
             <Reveal>
               <span className="label inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-1.5 text-ink/70">
                 <span className="h-1.5 w-1.5 rounded-full bg-blue" />
-                Otras planificaciones
+                {c.etiqueta}
               </span>
             </Reveal>
             <h2 className="heading mt-5 text-[clamp(1.8rem,3.6vw,3rem)] text-ink">
-              Para tu box, tu casa y la calle
+              {c.titulo}
             </h2>
           </div>
           <div className="flex flex-none gap-2">

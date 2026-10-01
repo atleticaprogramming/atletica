@@ -2,6 +2,7 @@
 import * as React from "react";
 import { Reveal, MaskReveal } from "@/components/ui/Reveal";
 import type { CourseData } from "@/lib/types";
+import type { SiteContent } from "@/lib/site/defaults";
 
 type Card = {
   n: string;
@@ -25,7 +26,13 @@ const Arrow = ({ dir }: { dir: "left" | "right" }) => (
   </svg>
 );
 
-export function Cursos({ cursos: data }: { cursos: CourseData[] }) {
+export function Cursos({
+  cursos: data,
+  c: textos,
+}: {
+  cursos: CourseData[];
+  c: SiteContent["homeCursos"];
+}) {
   const cursos: Card[] = data.map((c, i) => ({
     n: String(i + 1).padStart(2, "0"),
     t: c.title,
@@ -56,12 +63,12 @@ export function Cursos({ cursos: data }: { cursos: CourseData[] }) {
           <div>
             <Reveal>
               <span className="label inline-flex items-center gap-2 rounded-full border border-white/30 px-4 py-1.5 text-paper-pure/80">
-                Cursos · Formación
+                {textos.etiqueta}
               </span>
             </Reveal>
             <h2 className="heading mt-6 text-[clamp(1.9rem,4.4vw,3.6rem)] text-paper-pure">
-              <MaskReveal>Aprendé de</MaskReveal>
-              <MaskReveal delay={120}>los que compiten</MaskReveal>
+              <MaskReveal>{textos.titulo1}</MaskReveal>
+              <MaskReveal delay={120}>{textos.titulo2}</MaskReveal>
             </h2>
           </div>
           <div className="flex w-full items-end justify-end gap-6 lg:w-auto lg:items-center">
@@ -121,7 +128,7 @@ export function Cursos({ cursos: data }: { cursos: CourseData[] }) {
                     </span>
                   </div>
                   <span className="label mt-5 flex items-center justify-center gap-2 rounded-full bg-blue px-5 py-3 text-[0.6rem] text-ink transition-all group-hover:bg-blue/90">
-                    Ver curso
+                    {textos.boton}
                     <span className="transition-transform duration-300 ease-brand group-hover:translate-x-1">
                       →
                     </span>

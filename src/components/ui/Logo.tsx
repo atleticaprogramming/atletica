@@ -18,14 +18,16 @@ export function LogoMark({
 export function Wordmark({
   className = "",
   color = "currentColor",
+  text = "Atlética",
 }: {
   className?: string;
   color?: string;
+  text?: string;
 }) {
   return (
     <span className={`flex items-center gap-2.5 ${className}`} style={{ color }}>
       <LogoMark className="h-9 w-9" fill={color} />
-      <span className="display text-[1.35rem] leading-none pt-[2px]">Atlética</span>
+      <span className="display text-[1.35rem] leading-none pt-[2px]">{text}</span>
     </span>
   );
 }

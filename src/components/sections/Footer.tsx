@@ -1,19 +1,21 @@
 import { LogoMark } from "@/components/ui/Logo";
 import { getPlanLinks, getPublishedCourses } from "@/lib/content";
-
-const socials = [
-  { label: "Instagram", href: "https://www.instagram.com/atletica.fitness/" },
-  { label: "YouTube", href: "https://www.youtube.com/@atleticafitness" },
-];
+import { getSite } from "@/lib/site/store";
 
 export async function Footer() {
-  const [planLinks, cursos] = await Promise.all([
+  const [planLinks, cursos, site] = await Promise.all([
     getPlanLinks(),
     getPublishedCourses(),
+    getSite(),
   ]);
+  const { footer: c, ajustes } = site;
+  const socials = [
+    { label: "Instagram", href: ajustes.instagram },
+    { label: "YouTube", href: ajustes.youtube },
+  ].filter((s) => s.href.trim());
 
   return (
-    <footer className="bg-ink-deep pt-20 text-paper">
+    <footer id="footer" className="bg-ink-deep pt-20 text-paper">
       <div className="mx-auto max-w-site px-5 sm:px-8">
         <div className="grid grid-cols-1 gap-12 border-b border-white/10 pb-16 lg:grid-cols-[1.3fr_1fr_1fr]">
           {/* Brand — logotipo */}
@@ -23,8 +25,7 @@ export async function Footer() {
               <span className="display pt-1 text-3xl leading-none">Atlética</span>
             </div>
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-paper/60">
-              Programación, cursos y comunidad nacidos compitiendo en
-              Buenos Aires. Entrená con método.
+              {c.texto}
             </p>
             <div className="mt-7 flex gap-3">
               {socials.map((s) => (
@@ -40,17 +41,17 @@ export async function Footer() {
               ))}
             </div>
             <a
-              href="mailto:atletica.programming@gmail.com"
+              href={`mailto:${ajustes.email}`}
               className="label mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue px-5 py-2.5 text-[0.6rem] text-ink transition-all hover:bg-blue/90"
             >
-              Contacto
+              {c.contacto}
               <span aria-hidden>→</span>
             </a>
           </div>
 
           {/* Planificaciones */}
           <div>
-            <h4 className="label text-paper/50">Planificaciones</h4>
+            <h4 className="label text-paper/50">{c.tituloPlanes}</h4>
             <ul className="mt-5 flex flex-col gap-3">
               {planLinks.map((p) => (
                 <li key={p.name}>
@@ -69,7 +70,7 @@ export async function Footer() {
 
           {/* Cursos */}
           <div>
-            <h4 className="label text-paper/50">Cursos</h4>
+            <h4 className="label text-paper/50">{c.tituloCursos}</h4>
             <ul className="mt-5 flex flex-col gap-3">
               {cursos.map((c) => (
                 <li key={c.slug}>
@@ -94,7 +95,7 @@ export async function Footer() {
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-8 sm:flex-row">
           <span className="label text-paper/45">
-            © {new Date().getFullYear()} Atlética Fitness
+            © {new Date().getFullYear()} {c.copyright}
           </span>
           <div className="flex gap-6">
             <a

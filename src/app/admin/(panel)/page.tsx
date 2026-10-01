@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllCourses, getAllPlans } from "@/lib/content";
+import { sections } from "@/lib/site/schema";
 
 export const dynamic = "force-dynamic";
 
@@ -11,11 +12,21 @@ export default async function Dashboard() {
       <div>
         <h1 className="text-2xl font-bold">Panel de contenido</h1>
         <p className="mt-1 text-sm text-ink/55">
-          Gestioná los textos, cursos, planificaciones y precios del sitio.
+          Gestioná los textos, imágenes, cursos, planificaciones y precios del sitio.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Link
+          href="/admin/contenido"
+          className="rounded-2xl border border-ink/10 bg-white p-6 transition-colors hover:border-ink/30"
+        >
+          <div className="text-3xl font-bold">{sections.length}</div>
+          <div className="mt-1 text-sm font-semibold">Textos e imágenes</div>
+          <p className="mt-1 text-xs text-ink/50">
+            Toda la web: home, Fitness Center, contacto, pie y legales.
+          </p>
+        </Link>
         <Link
           href="/admin/cursos"
           className="rounded-2xl border border-ink/10 bg-white p-6 transition-colors hover:border-ink/30"

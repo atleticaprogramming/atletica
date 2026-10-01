@@ -1,31 +1,10 @@
 "use client";
 import * as React from "react";
 import { Reveal, MaskReveal } from "@/components/ui/Reveal";
+import type { SiteContent } from "@/lib/site/defaults";
 
-const tabs = [
-  {
-    label: "Evaluación inicial",
-    body: "Antes de programar, medimos. Tests de fuerza, gimnásticos y motor para saber de dónde partís y a dónde podés llegar.",
-    img: "/img/db-snatch.jpg",
-  },
-  {
-    label: "Bloques periodizados",
-    body: "Mesociclos con foco claro: fuerza, capacidad de trabajo, gimnásticos o picos de competencia. Nada queda librado al azar.",
-    img: "/img/bar-muscleup.jpg",
-  },
-  {
-    label: "Movilidad y accesorios",
-    body: "El trabajo invisible que sostiene el rendimiento. Accesorios, core y movilidad integrados a cada semana.",
-    img: "/img/handstand.jpg",
-  },
-  {
-    label: "Seguimiento y comunidad",
-    body: "Registrás tus resultados, recibís feedback y entrenás acompañado por una comunidad que rinde cuentas con vos.",
-    img: "/img/rope-sunset.jpg",
-  },
-];
-
-export function Metodo() {
+export function Metodo({ c }: { c: SiteContent["homeMetodo"] }) {
+  const tabs = c.etapas.map((e) => ({ label: e.titulo, body: e.texto, img: e.imagen }));
   const [active, setActive] = React.useState(0);
 
   return (
@@ -36,14 +15,14 @@ export function Metodo() {
           <div className="flex flex-col">
             <Reveal>
               <span className="label inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-1.5 text-paper/70">
-                El método
+                {c.etiqueta}
               </span>
             </Reveal>
             <h2 className="heading mt-7 text-paper text-[clamp(1.8rem,4vw,3.1rem)]">
-              <MaskReveal>Cuatro etapas</MaskReveal>
+              <MaskReveal>{c.titulo1}</MaskReveal>
               <MaskReveal delay={120}>
-                  <span className="text-white/80">un solo objetivo</span>
-                </MaskReveal>
+                <span className="text-white/80">{c.titulo2}</span>
+              </MaskReveal>
             </h2>
 
             <div className="mt-10 flex flex-col gap-2">
@@ -63,7 +42,7 @@ export function Metodo() {
                         active === i ? "text-blue" : "text-paper/40"
                       }`}
                     >
-                      0{i + 1}
+                      {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="text-xl font-semibold tracking-tightest text-paper sm:text-2xl">
                       {t.label}

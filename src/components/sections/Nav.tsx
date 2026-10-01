@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { Wordmark } from "@/components/ui/Logo";
+import { externo } from "@/lib/box";
 
 type NavLink = { label: string; href: string };
 
@@ -16,10 +17,14 @@ export function Nav({
   solid = false,
   links = defaultLinks,
   cta = defaultCta,
+  wordmark = "Atlética",
+  wordmarkCorto = "Atlética",
 }: {
   solid?: boolean;
   links?: NavLink[];
   cta?: NavLink;
+  wordmark?: string;
+  wordmarkCorto?: string;
 }) {
   const [scrolled, setScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -36,20 +41,30 @@ export function Nav({
       {/* Bar */}
       <div className="px-4 pt-4 sm:px-6">
         <div
-          className={`mx-auto flex max-w-site items-center justify-between rounded-[14px] px-4 py-3 transition-all duration-500 ease-brand sm:px-6 ${
+          className={`mx-auto flex max-w-site items-center justify-between rounded-[14px] px-4 py-3 transition-all duration-500 ease-brand sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr] ${
             scrolled || solid
               ? "bg-ink/85 backdrop-blur-xl ring-1 ring-white/10"
               : "bg-transparent"
           }`}
         >
           <a href="/" aria-label="Atlética" className="text-paper">
-            <Wordmark />
+            {wordmark === "Atlética" ? (
+              <Wordmark />
+            ) : (
+              <>
+                {/* El nombre largo no entra en móvil: ahí va el corto. */}
+                <Wordmark className="sm:hidden" text={wordmarkCorto} />
+                <Wordmark className="hidden whitespace-nowrap sm:flex" text={wordmark} />
+              </>
+            )}
           </a>
 
+          {/* Columna central del grid: queda en el centro exacto de la
+              página, no entre el wordmark y el botón. */}
           <nav className="hidden items-center gap-1 lg:flex">
-            {links.map((l) => (
+            {links.map((l, i) => (
               <a
-                key={l.href}
+                key={i}
                 href={l.href}
                 className="label rounded-full px-4 py-2 !text-[12px] text-paper/80 transition-colors hover:bg-white/10 hover:text-paper"
               >
@@ -58,9 +73,10 @@ export function Nav({
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 lg:justify-self-end">
             <a
               href={cta.href}
+              {...externo(cta.href)}
               className="label hidden rounded-full bg-blue px-5 py-2.5 !text-[12px] text-ink transition-all hover:bg-blue/90 sm:inline-block"
             >
               {cta.label}
@@ -95,9 +111,9 @@ export function Nav({
         {open && (
           <div className="mx-auto mt-2 max-w-site rounded-[14px] bg-ink/95 p-4 ring-1 ring-white/10 backdrop-blur-xl lg:hidden">
             <nav className="flex flex-col">
-              {links.map((l) => (
+              {links.map((l, i) => (
                 <a
-                  key={l.href}
+                  key={i}
                   href={l.href}
                   onClick={() => setOpen(false)}
                   className="heading border-b border-white/10 py-3 text-xl text-paper last:border-0"
@@ -107,6 +123,7 @@ export function Nav({
               ))}
               <a
                 href={cta.href}
+                {...externo(cta.href)}
                 onClick={() => setOpen(false)}
                 className="label mt-4 rounded-full bg-blue px-5 py-3 text-center text-[0.64rem] text-ink"
               >

@@ -1,9 +1,30 @@
 "use client";
 import * as React from "react";
-import { box } from "@/lib/box";
-import { BoxAcciones } from "@/components/box/BoxAcciones";
+import type { SiteContent } from "@/lib/site/defaults";
+import { contactoHref, preinscripcionHref, externo, type Ajustes } from "@/lib/box";
+import { Lineas } from "@/components/ui/Lineas";
+import { FitLine } from "@/components/ui/FitLine";
 
-export function BoxHero() {
+/**
+ * Primer fold según el Figma (nodo 65:28): díptico de fotos a media pantalla
+ * cada una con su velo, chips, el nombre completo en una sola línea a todo
+ * el ancho, bajada en mono y dos botones. Sin reglas ni vidrio.
+ */
+export function BoxHero({
+  c,
+  box,
+  ajustes,
+}: {
+  c: SiteContent["boxHero"];
+  box: SiteContent["box"];
+  ajustes: Ajustes;
+}) {
+  const pre = preinscripcionHref(ajustes, box.nombre);
+  const contacto = contactoHref(ajustes, c.mensajeWhatsapp);
+  // En móvil el nombre va en dos líneas: el nombre corto y el resto.
+  const lineasMovil = box.nombre.startsWith(box.nombreCorto + " ")
+    ? [box.nombreCorto, box.nombre.slice(box.nombreCorto.length + 1)]
+    : [box.nombre];
   const [show, setShow] = React.useState(false);
   React.useEffect(() => {
     const t = setTimeout(() => setShow(true), 120);
@@ -21,68 +42,99 @@ export function BoxHero() {
       id="top"
       className="relative flex min-h-[100svh] items-center overflow-hidden bg-ink"
     >
-      {/* Fondo — la nave */}
-      <div className="absolute inset-0">
-        <img
-          src="/img/nave.jpg"
-          alt="Interior de la nave: racks, discos y plataformas bajo los lucernarios"
-          /* En móvil el recorte cae sobre los racks y los anillos (sin texto);
-             en desktop entra la nave completa, con el mural arriba. */
-          className="h-full w-full origin-bottom scale-[1.08] object-cover object-[8%_50%] sm:object-[50%_48%]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/70" />
-        <div className="absolute inset-0 bg-ink/25" />
+      {/* Díptico con una sola veladura #001014 al 60% por encima de las dos
+          fotos (sustituye a los velos negros por foto del Figma). En móvil
+          queda sólo la primera foto (la mancuerna). */}
+      <div className="absolute inset-0 flex">
+        <div className="relative w-full sm:w-1/2">
+          <img
+            src={c.imagenIzquierda}
+            alt=""
+            className="h-full w-full object-cover object-[45%_0%] sm:object-top"
+          />
+        </div>
+        <div className="relative hidden w-1/2 sm:block">
+          <img
+            src={c.imagenDerecha}
+            alt=""
+            className="h-full w-full object-cover object-top"
+          />
+        </div>
+        <div className="absolute inset-0 bg-[#001014]/60" />
       </div>
 
-      {/* Título + acciones, centrados */}
       <div className="relative z-10 mx-auto flex w-full max-w-site flex-col items-center px-5 pb-16 pt-36 text-center sm:px-8 sm:pb-20 sm:pt-40">
         <div
-            className="mb-4 flex flex-wrap items-center justify-center gap-2.5 transition-all duration-700 ease-brand sm:mb-5"
-            style={anim(160)}
-          >
-          <span className="label inline-flex items-center gap-2 rounded-full border border-white/30 px-4 py-1.5 text-paper-pure/85">
-            <span className="relative flex h-1.5 w-1.5">
+          className="flex flex-wrap items-center justify-center gap-2.5 transition-all duration-700 ease-brand"
+          style={anim(160)}
+        >
+          <span className="label inline-flex items-center justify-center gap-2.5 rounded-full px-5 py-2 text-paper-pure ring-1 ring-white/[0.06] whitespace-nowrap backdrop-blur-2xl sm:w-[15.5rem]">
+            <span className="relative flex h-[7px] w-[7px]">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue" />
+              <span className="relative inline-flex h-[7px] w-[7px] rounded-full bg-blue" />
             </span>
-            Preinscripción abierta
+            {c.chip}
           </span>
-          <span className="label inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-paper/85 ring-1 ring-white/15 backdrop-blur-md">
+          <span className="label inline-flex items-center justify-center rounded-full bg-white/10 px-5 py-2 text-paper-pure ring-1 ring-white/[0.14] whitespace-nowrap backdrop-blur-2xl sm:w-[15.5rem]">
             {box.barrio}, {box.ciudad}
           </span>
-          {box.apertura && (
-            <span className="label inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-paper/85 ring-1 ring-white/15 backdrop-blur-md">
-              Apertura {box.apertura}
-            </span>
-          )}
         </div>
 
-        <div className="flex w-full flex-col gap-4">
-          <div
-            className="h-px w-full bg-white/20 transition-all duration-700 ease-brand"
-            style={{ opacity: show ? 1 : 0, transitionDelay: "300ms" }}
-          />
-          <h1 className="display -mx-5 select-none leading-[0.82] text-paper-pure sm:-mx-8">
-            <span className="block overflow-hidden">
-              <span
-                className="block whitespace-nowrap text-[clamp(1.9rem,13vw,16rem)] transition-transform duration-[1100ms] ease-brand sm:text-[clamp(2rem,14.3vw,16rem)]"
-                style={{ transform: show ? "translateY(0)" : "translateY(14%)" }}
+        {/* El nombre completo es el título, en una línea que llena el ancho
+            del contenedor (medida en el DOM). */}
+        <h1 className="display mt-8 w-full select-none leading-[0.9] text-paper-pure sm:mt-10">
+          {/* En móvil una sola línea quedaría a 27px: se parte en dos. */}
+          <span className="flex flex-col gap-[0.04em] leading-[0.84] sm:hidden">
+            {lineasMovil.map((l, i) => (
+              <FitLine
+                key={i}
+                className="transition-transform duration-[1100ms] ease-brand"
+                style={{
+                  transform: show ? "translateY(0)" : "translateY(14%)",
+                  transitionDelay: `${i * 90}ms`,
+                }}
               >
-                Atlética BOX
-              </span>
-            </span>
-          </h1>
-          <div
-            className="h-px w-full bg-white/20 transition-all duration-700 ease-brand"
-            style={{ opacity: show ? 1 : 0, transitionDelay: "420ms" }}
-          />
-        </div>
+                {l}
+              </FitLine>
+            ))}
+          </span>
+          <span className="hidden sm:block">
+            <FitLine
+              className="transition-transform duration-[1100ms] ease-brand"
+              style={{ transform: show ? "translateY(0)" : "translateY(14%)" }}
+            >
+              {box.nombre}
+            </FitLine>
+          </span>
+        </h1>
+
+        <p
+          className="label mt-6 max-w-[34rem] !tracking-[0.1em] leading-[1.65] text-paper-pure transition-all duration-1000 ease-brand sm:mt-7"
+          style={anim(480)}
+        >
+          <Lineas texto={c.bajada} />
+        </p>
 
         <div
-          className="mt-10 transition-all duration-1000 ease-brand sm:mt-12"
-          style={anim(560)}
+          className="mt-9 flex w-full flex-wrap items-center justify-center gap-3 transition-all duration-1000 ease-brand sm:mt-11 sm:gap-8"
+          style={anim(600)}
         >
-          <BoxAcciones className="justify-center" />
+          <a
+            href={pre}
+            {...externo(pre)}
+            className="label w-full rounded-full bg-blue px-8 py-4 text-center !text-[12px] text-ink transition-all hover:bg-blue/90 sm:w-[10.5rem]"
+          >
+            {c.boton1}
+          </a>
+          <a
+            href={contacto}
+            {...externo(contacto)}
+            /* En el Figma el texto va en negro, pero sobre la foto oscurecida no se
+               lee: va en blanco como el resto de los secundarios del sitio. */
+            className="label w-full rounded-full bg-white/10 px-8 py-4 text-center !text-[12px] text-paper-pure ring-1 ring-white/[0.14] backdrop-blur-2xl transition-all hover:bg-white/20 sm:w-[10.5rem]"
+          >
+            {c.boton2}
+          </a>
         </div>
       </div>
     </section>

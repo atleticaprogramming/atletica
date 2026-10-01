@@ -13,28 +13,33 @@ import {
   getMainPlans,
   getOtrasPlanes,
 } from "@/lib/content";
+import { getSite } from "@/lib/site/store";
 
 // El contenido se administra desde /admin; revalidamos para reflejar cambios.
 export const revalidate = 60;
 
 export default async function Home() {
-  const [cursos, mainPlans, otrasPlanes] = await Promise.all([
+  const [cursos, mainPlans, otrasPlanes, site] = await Promise.all([
     getPublishedCourses(),
     getMainPlans(),
     getOtrasPlanes(),
+    getSite(),
   ]);
 
   return (
     <main className="overflow-clip">
-      <Nav />
-      <Hero />
-      <Manifiesto />
-      <Programas plans={mainPlans} />
-      <Cursos cursos={cursos} />
-      <Metodo />
-      <OtrasPlanificaciones especiales={otrasPlanes} />
-      <Valores />
-      <CtaFinal />
+      <Nav
+        links={site.homeNav.links}
+        cta={{ label: site.homeNav.cta, href: site.homeNav.ctaHref }}
+      />
+      <Hero c={site.homeHero} />
+      <Manifiesto c={site.homeQueEs} />
+      <Programas plans={mainPlans} c={site.homeProgramas} />
+      <Cursos cursos={cursos} c={site.homeCursos} />
+      <Metodo c={site.homeMetodo} />
+      <OtrasPlanificaciones especiales={otrasPlanes} c={site.homeOtras} />
+      <Valores c={site.homeValores} />
+      <CtaFinal c={site.homeCta} />
       <Footer />
     </main>
   );

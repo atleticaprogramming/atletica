@@ -9,3 +9,7 @@ next-env.d.ts
 
 # el ejemplo sí se versiona (documenta las variables necesarias)
 !.env.local.example
+
+# contenido y subidas del admin en modo local
+.content/
+public/uploads/

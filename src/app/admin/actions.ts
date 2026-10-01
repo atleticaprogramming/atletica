@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { signIn, signOut } from "@/lib/auth";
+import { signIn, signOut, isAuthenticated } from "@/lib/auth";
 import {
   upsertCourse,
   deleteCourse,
@@ -14,6 +14,8 @@ import { hasDb } from "@/lib/db";
 import type { CourseData, Module, PlanData, PlanGroup } from "@/lib/types";
 
 function guardDb(redirectTo: string) {
+  // Las server actions se pueden llamar desde afuera: sin sesión, nada.
+  if (!isAuthenticated()) redirect("/admin/login");
   if (!hasDb()) redirect(`${redirectTo}?error=nodb`);
 }
 

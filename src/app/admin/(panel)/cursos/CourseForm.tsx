@@ -1,4 +1,5 @@
 import { StringListField, ModulesField } from "@/components/admin/Fields";
+import { ImageInput } from "@/components/admin/ImageInput";
 import { saveCourseAction, deleteCourseAction } from "@/app/admin/actions";
 import type { CourseData } from "@/lib/types";
 
@@ -38,7 +39,15 @@ function Field({
   );
 }
 
-export function CourseForm({ course }: { course?: CourseData }) {
+export function CourseForm({
+  course,
+  blob,
+  gallery,
+}: {
+  course?: CourseData;
+  blob: boolean;
+  gallery: string[];
+}) {
   const isEdit = Boolean(course);
 
   return (
@@ -95,19 +104,20 @@ export function CourseForm({ course }: { course?: CourseData }) {
             hint="menor = primero"
           />
           <Field
-            label="Imagen (ruta opcional)"
-            name="image"
-            defaultValue={course?.image}
-            placeholder="/img/cursos/handstand.jpg"
-            hint="ruta a un archivo en /public"
-          />
-          <Field
             label="Link de compra"
             name="enrollUrl"
             defaultValue={course?.enrollUrl}
             placeholder="https://…/checkout/…"
           />
         </div>
+
+        <ImageInput
+          name="image"
+          label="Imagen"
+          defaultValue={course?.image}
+          blob={blob}
+          gallery={gallery}
+        />
 
         <div className="flex flex-col gap-2">
           <label className={lbl}>Descripción corta (tarjeta del home)</label>

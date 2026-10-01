@@ -1,4 +1,4 @@
-import { Nav } from "@/components/sections/Nav";
+import { SiteNav } from "@/components/sections/SiteNav";
 import { Footer } from "@/components/sections/Footer";
 
 export type LegalSection = { h: string; body: string[] };
@@ -8,15 +8,17 @@ export function LegalLayout({
   updated,
   intro,
   sections,
+  nota,
 }: {
   title: string;
   updated: string;
   intro: string;
   sections: LegalSection[];
+  nota: string;
 }) {
   return (
     <main className="overflow-clip bg-paper text-ink">
-      <Nav solid />
+      <SiteNav solid />
 
       <article className="mx-auto max-w-3xl px-5 pb-24 pt-32 sm:px-8 sm:pt-36">
         <a
@@ -50,8 +52,7 @@ export function LegalLayout({
         </div>
 
         <p className="mt-14 text-sm leading-relaxed text-ink/45">
-          Este documento es de carácter general y orientativo. Te recomendamos
-          revisarlo con asesoramiento legal antes de su publicación definitiva.
+          {nota}
         </p>
       </article>
 

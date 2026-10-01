@@ -1,3 +1,4 @@
+import { getGallery } from "@/lib/site/gallery";
 import { notFound } from "next/navigation";
 import { getCourse } from "@/lib/content";
 import { CourseForm } from "@/app/admin/(panel)/cursos/CourseForm";
@@ -20,7 +21,11 @@ export default async function EditarCurso({
         </a>
         <h1 className="mt-2 text-2xl font-bold">{course.title}</h1>
       </div>
-      <CourseForm course={course} />
+      <CourseForm
+        course={course}
+        blob={Boolean(process.env.BLOB_READ_WRITE_TOKEN)}
+        gallery={await getGallery()}
+      />
     </div>
   );
 }

@@ -1,20 +1,11 @@
 "use client";
 import * as React from "react";
 import { Reveal, MaskReveal } from "@/components/ui/Reveal";
-import { faqs, box } from "@/lib/box";
+import type { SiteContent } from "@/lib/site/defaults";
 
-export function BoxFaq() {
+export function BoxFaq({ c }: { c: SiteContent["boxFaq"] }) {
   const [open, setOpen] = React.useState<number | null>(0);
-
-  const items = faqs.map((f) => {
-    if (f.q === "¿Cuándo abre?" && box.apertura) {
-      return { ...f, a: `Abrimos ${box.apertura}. ${f.a}` };
-    }
-    if (f.q === "¿Dónde va a estar?" && box.direccion) {
-      return { ...f, a: `En ${box.direccion}, ${box.barrio}, ${box.ciudad}.` };
-    }
-    return f;
-  });
+  const items = c.preguntas.map((p) => ({ q: p.pregunta, a: p.respuesta }));
 
   return (
     <section
@@ -26,16 +17,16 @@ export function BoxFaq() {
           <div>
             <Reveal>
               <span className="label inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-1.5 text-ink/70">
-                Preguntas
+                {c.etiqueta}
               </span>
             </Reveal>
             <h2 className="heading mt-5 text-[clamp(1.55rem,2.9vw,2.4rem)] text-ink">
-              <MaskReveal>Preguntas</MaskReveal>
-              <MaskReveal delay={120}>frecuentes</MaskReveal>
+              <MaskReveal>{c.titulo1}</MaskReveal>
+              <MaskReveal delay={120}>{c.titulo2}</MaskReveal>
             </h2>
             <Reveal delay={220}>
-              <p className="mt-5 max-w-xs text-[0.95rem] leading-relaxed text-ink/65">
-                Si te falta algo, escribinos y te contestamos.
+              <p className="mt-5 max-w-sm text-[0.95rem] leading-relaxed text-ink/65">
+                {c.intro}
               </p>
             </Reveal>
           </div>
@@ -43,7 +34,7 @@ export function BoxFaq() {
           <div className="flex flex-col">
             {items.map((f, i) => (
               <div
-                key={f.q}
+                key={i}
                 className={`border-t border-ink/15 ${
                   i === items.length - 1 ? "border-b" : ""
                 }`}

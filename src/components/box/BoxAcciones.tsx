@@ -1,5 +1,11 @@
 "use client";
-import { box, pagoHref, contactoHref } from "@/lib/box";
+import {
+  preinscripcionHref,
+  contactoHref,
+  externo,
+  tieneWhatsapp,
+  type Ajustes,
+} from "@/lib/box";
 
 const Whats = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
@@ -13,13 +19,21 @@ const Whats = ({ className = "h-4 w-4" }: { className?: string }) => (
 );
 
 /**
- * Los dos caminos de la landing: pagar la tarifa fundador o hablar con alguien.
+ * Los dos caminos de la landing: preinscribirse o hablar con alguien.
  * `tone` sólo cambia el botón secundario, que vive sobre fondo oscuro o claro.
  */
 export function BoxAcciones({
+  ajustes,
+  boton1,
+  boton2,
+  mensaje,
   tone = "dark",
   className = "",
 }: {
+  ajustes: Ajustes;
+  boton1: string;
+  boton2: string;
+  mensaje: string;
   tone?: "dark" | "light";
   className?: string;
 }) {
@@ -28,28 +42,25 @@ export function BoxAcciones({
       ? "bg-white/10 text-paper-pure ring-1 ring-white/25 backdrop-blur-md hover:bg-white/20"
       : "bg-paper text-ink ring-1 ring-ink/20 hover:bg-ink hover:text-paper";
 
+  const pre = preinscripcionHref(ajustes);
+  const contacto = contactoHref(ajustes, mensaje);
+
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
       <a
-        href={pagoHref()}
-        {...(box.pagoUrl
-          ? { target: "_blank", rel: "noopener noreferrer" }
-          : {})}
+        href={pre}
+        {...externo(pre)}
         className="label w-full rounded-full bg-blue px-8 py-4 text-center text-[0.66rem] text-ink transition-all hover:bg-blue/90 sm:w-auto"
       >
-        Pagar tarifa fundador
+        {boton1}
       </a>
       <a
-        href={contactoHref(
-          `Hola! Quiero info del box de ${box.barrio}.`
-        )}
-        {...(box.whatsapp
-          ? { target: "_blank", rel: "noopener noreferrer" }
-          : {})}
+        href={contacto}
+        {...externo(contacto)}
         className={`label flex w-full items-center justify-center gap-2.5 rounded-full px-7 py-4 text-[0.66rem] transition-all sm:w-auto ${secundario}`}
       >
-        <Whats />
-        {box.whatsapp ? "Escribinos por WhatsApp" : "Escribinos"}
+        {tieneWhatsapp(ajustes) && <Whats />}
+        {boton2}
       </a>
     </div>
   );

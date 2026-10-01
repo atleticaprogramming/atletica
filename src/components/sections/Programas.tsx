@@ -2,8 +2,15 @@
 import { Reveal, MaskReveal } from "@/components/ui/Reveal";
 import { PlanCard, type Plan } from "@/components/ui/PlanCard";
 import type { PlanData } from "@/lib/types";
+import type { SiteContent } from "@/lib/site/defaults";
 
-export function Programas({ plans: data }: { plans: PlanData[] }) {
+export function Programas({
+  plans: data,
+  c,
+}: {
+  plans: PlanData[];
+  c: SiteContent["homeProgramas"];
+}) {
   const plans: Plan[] = data.map((p) => ({
     name: p.name,
     url: p.url,
@@ -26,18 +33,17 @@ export function Programas({ plans: data }: { plans: PlanData[] }) {
             <Reveal>
               <span className="label inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-1.5 text-ink/70">
                 <span className="h-1.5 w-1.5 rounded-full bg-blue" />
-                Planificaciones
+                {c.etiqueta}
               </span>
             </Reveal>
             <h2 className="heading mt-6 text-[clamp(1.9rem,4.2vw,3.4rem)] text-ink">
-              <MaskReveal>Elegí tu</MaskReveal>
-              <MaskReveal delay={120}>nivel de juego</MaskReveal>
+              <MaskReveal>{c.titulo1}</MaskReveal>
+              <MaskReveal delay={120}>{c.titulo2}</MaskReveal>
             </h2>
           </div>
           <Reveal delay={200} className="max-w-sm">
             <p className="text-[0.95rem] leading-relaxed text-ink/65">
-              Tres caminos, un mismo método. Elegí el que va con tu momento y
-              entrená con intención. Sin permanencia.
+              {c.texto}
             </p>
           </Reveal>
         </div>

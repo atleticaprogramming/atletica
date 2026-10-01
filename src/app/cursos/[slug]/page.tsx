@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Nav } from "@/components/sections/Nav";
+import { SiteNav } from "@/components/sections/SiteNav";
 import { Footer } from "@/components/sections/Footer";
 import { Reveal, MaskReveal } from "@/components/ui/Reveal";
 import { getCourse, getCourseSlugs } from "@/lib/content";
@@ -62,7 +62,7 @@ export default async function CoursePage({
 
   return (
     <main className="overflow-clip bg-paper text-ink">
-      <Nav solid />
+      <SiteNav solid />
 
       <article className="mx-auto max-w-site px-5 pb-8 pt-32 sm:px-8 sm:pt-36">
         {/* Back link */}

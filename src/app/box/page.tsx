@@ -2,42 +2,40 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/sections/Nav";
 import { Footer } from "@/components/sections/Footer";
 import { BoxHero } from "@/components/box/BoxHero";
-import { BoxNave } from "@/components/box/BoxNave";
+import { BoxQueSomos } from "@/components/box/BoxQueSomos";
 import { BoxDisciplinas } from "@/components/box/BoxDisciplinas";
-import { BoxFundador } from "@/components/box/BoxFundador";
+import { BoxPreinscripcion } from "@/components/box/BoxPreinscripcion";
 import { BoxFaq } from "@/components/box/BoxFaq";
-import { box } from "@/lib/box";
+import { preinscripcionHref } from "@/lib/box";
+import { getSite } from "@/lib/site/store";
 
-// El footer lee contenido administrado desde /admin.
+// Textos e imágenes se administran desde /admin.
 export const revalidate = 60;
 
-const title = `Atlética BOX — ${box.barrio}`;
-const description = `Atlética abre su box en ${box.barrio}, ${box.ciudad}: crosstraining, levantamiento olímpico y gimnásticos en una nave propia. Preinscribite y te queda la tarifa fundador.`;
+export async function generateMetadata(): Promise<Metadata> {
+  const { box } = await getSite();
+  const title = `${box.nombre} — ${box.barrio}`;
+  const description = box.descripcion;
+  return { title, description, openGraph: { title, description, type: "website" } };
+}
 
-export const metadata: Metadata = {
-  title,
-  description,
-  openGraph: { title, description, type: "website" },
-};
+export default async function BoxPage() {
+  const site = await getSite();
+  const { box, ajustes } = site;
 
-const navLinks = [
-  { label: "Qué se entrena", href: "#disciplinas" },
-  { label: "Tarifa fundador", href: "#preinscripcion" },
-  { label: "Preguntas", href: "#preguntas" },
-];
-
-export default function BoxPage() {
   return (
     <main className="overflow-clip">
       <Nav
-        links={navLinks}
-        cta={{ label: "Preinscribirme", href: "#preinscripcion" }}
+        links={box.links}
+        cta={{ label: box.ctaNav, href: preinscripcionHref(ajustes, box.nombre) }}
+        wordmark={box.nombre}
+        wordmarkCorto={box.nombreCorto}
       />
-      <BoxHero />
-      <BoxNave />
-      <BoxDisciplinas />
-      <BoxFundador />
-      <BoxFaq />
+      <BoxHero c={site.boxHero} box={box} ajustes={ajustes} />
+      <BoxQueSomos c={site.boxQueSomos} />
+      <BoxDisciplinas c={site.boxDisciplinas} ajustes={ajustes} />
+      <BoxPreinscripcion c={site.boxPreinscripcion} ajustes={ajustes} />
+      <BoxFaq c={site.boxFaq} />
       <Footer />
     </main>
   );

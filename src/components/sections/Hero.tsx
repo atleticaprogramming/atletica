@@ -1,7 +1,8 @@
 "use client";
 import * as React from "react";
+import type { SiteContent } from "@/lib/site/defaults";
 
-export function Hero() {
+export function Hero({ c }: { c: SiteContent["homeHero"] }) {
   const [show, setShow] = React.useState(false);
   React.useEffect(() => {
     const t = setTimeout(() => setShow(true), 120);
@@ -20,9 +21,11 @@ export function Hero() {
           loop
           muted
           playsInline
+          poster={c.poster || undefined}
+          key={c.video}
           className="h-full w-full object-cover object-[60%_28%]"
         >
-          <source src="/video/manifiesto.mp4" type="video/mp4" />
+          <source src={c.video} />
         </video>
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/30" />
         <div className="absolute inset-0 bg-gradient-to-r from-ink/75 via-transparent to-transparent" />
@@ -44,7 +47,7 @@ export function Hero() {
                 className="block text-[clamp(2.5rem,21vw,24rem)] transition-transform duration-[1100ms] ease-brand"
                 style={{ transform: show ? "translateY(0)" : "translateY(12%)" }}
               >
-                Atlética
+                {c.titulo}
               </span>
             </span>
           </h1>
@@ -65,21 +68,25 @@ export function Hero() {
           }}
         >
           <div className="max-w-md text-[0.9rem] leading-relaxed text-paper/85">
-            <p>Para quienes compiten. Para quienes entrenan por primera vez.</p>
-            <p>Un mismo lugar. Un mismo método. Una misma comunidad.</p>
+            {c.texto
+              .split(/\r?\n/)
+              .filter((l) => l.trim())
+              .map((l, i) => (
+                <p key={i}>{l}</p>
+              ))}
           </div>
           <div className="flex flex-wrap gap-3">
             <a
               href="#programaciones"
               className="label rounded-full bg-blue px-7 py-3.5 text-[0.66rem] text-ink transition-all hover:bg-blue/90"
             >
-              Ver programaciones
+              {c.boton1}
             </a>
             <a
               href="#cursos"
               className="label rounded-full bg-white/10 px-7 py-3.5 text-[0.66rem] text-paper ring-1 ring-white/20 backdrop-blur-md transition-all hover:bg-white/20"
             >
-              Ver cursos
+              {c.boton2}
             </a>
           </div>
         </div>
