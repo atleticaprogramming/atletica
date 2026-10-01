@@ -3,6 +3,7 @@ import * as React from "react";
 import type { Field } from "@/lib/site/schema";
 import { ImageField } from "@/components/admin/ImageField";
 import { saveSiteSection, resetSiteSection } from "@/app/admin/site-actions";
+import type { UploadMode } from "@/lib/upload-mode";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -11,7 +12,7 @@ const input =
 const btn =
   "rounded-lg border border-ink/15 px-3 py-2 text-xs font-medium text-ink/70 transition-colors hover:bg-ink/5 disabled:opacity-40";
 
-type Ctx = { blob: boolean; gallery: string[] };
+type Ctx = { blob: UploadMode; gallery: string[] };
 
 /** Un elemento nuevo de una lista: vacío, con la forma de sus campos. */
 function vacio(fields: Field[]): Record<string, any> {
@@ -273,7 +274,7 @@ export function SectionForm({
   initial: Record<string, any>;
   href: string;
   canSave: boolean;
-  blob: boolean;
+  blob: UploadMode;
   gallery: string[];
 }) {
   const [data, setData] = React.useState(initial);

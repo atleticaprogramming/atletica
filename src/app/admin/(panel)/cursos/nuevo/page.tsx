@@ -1,3 +1,4 @@
+import { uploadMode } from "@/lib/upload-mode";
 import { getGallery } from "@/lib/site/gallery";
 import { CourseForm } from "@/app/admin/(panel)/cursos/CourseForm";
 
@@ -12,7 +13,7 @@ export default async function NuevoCurso() {
         </a>
         <h1 className="mt-2 text-2xl font-bold">Nuevo curso</h1>
       </div>
-      <CourseForm blob={Boolean(process.env.BLOB_READ_WRITE_TOKEN)} gallery={await getGallery()} />
+      <CourseForm blob={uploadMode()} gallery={await getGallery()} />
     </div>
   );
 }

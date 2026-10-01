@@ -1,11 +1,13 @@
 import "server-only";
-import { sql, ensureSchema } from "@/lib/db";
+import { sql, seedDatabase } from "@/lib/db";
 import type { CourseData, PlanData } from "@/lib/types";
 
 // Escrituras de contenido (usadas por las server actions del panel /admin).
+// Antes de escribir se cargan los datos base si la base está vacía: si no,
+// editar un curso en una base nueva dejaría la web con ese único curso.
 
 export async function upsertCourse(c: CourseData): Promise<void> {
-  await ensureSchema();
+  await seedDatabase(false);
   await sql`
     INSERT INTO courses
       (slug, title, category, image, price, meta, enroll_url, card_desc, lecciones,
@@ -36,12 +38,12 @@ export async function upsertCourse(c: CourseData): Promise<void> {
 }
 
 export async function deleteCourse(slug: string): Promise<void> {
-  await ensureSchema();
+  await seedDatabase(false);
   await sql`DELETE FROM courses WHERE slug = ${slug}`;
 }
 
 export async function createPlan(p: Omit<PlanData, "id">): Promise<void> {
-  await ensureSchema();
+  await seedDatabase(false);
   await sql`
     INSERT INTO plans
       (grp, name, description, price, period, features, footer, url,
@@ -54,7 +56,7 @@ export async function createPlan(p: Omit<PlanData, "id">): Promise<void> {
 }
 
 export async function updatePlan(p: PlanData): Promise<void> {
-  await ensureSchema();
+  await seedDatabase(false);
   await sql`
     UPDATE plans SET
       grp = ${p.group},
@@ -74,6 +76,6 @@ export async function updatePlan(p: PlanData): Promise<void> {
 }
 
 export async function deletePlan(id: number): Promise<void> {
-  await ensureSchema();
+  await seedDatabase(false);
   await sql`DELETE FROM plans WHERE id = ${id}`;
 }

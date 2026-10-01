@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
-import { upload } from "@vercel/blob/client";
+import { upload, uploadPresigned } from "@vercel/blob/client";
+import type { UploadMode } from "@/lib/upload-mode";
 
 const btn =
   "rounded-lg border border-ink/15 bg-white px-3 py-2 text-xs font-medium text-ink/75 transition-colors hover:bg-ink/5 disabled:opacity-50";
@@ -27,10 +28,33 @@ async function preparar(file: File): Promise<File> {
   return new File([blob], name, { type: blob.type });
 }
 
-export async function subirArchivo(file: File, blob: boolean): Promise<string> {
+/** Nombre limpio y único: la URL firmada vale sólo para ese nombre. */
+function destino(name: string) {
+  const ext = (name.match(/\.\w+$/)?.[0] ?? ".jpg").toLowerCase();
+  const base =
+    name
+      .replace(/\.\w+$/, "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40) || "imagen";
+  return `atletica/${base}-${Date.now().toString(36)}${ext}`;
+}
+
+export async function subirArchivo(file: File, modo: UploadMode): Promise<string> {
   const listo = await preparar(file);
-  if (blob) {
-    const res = await upload(`atletica/${listo.name}`, listo, {
+  if (modo === "presigned") {
+    const res = await uploadPresigned(destino(listo.name), listo, {
+      access: "public",
+      handleUploadUrl: "/api/admin/upload",
+      contentType: listo.type,
+    });
+    return res.url;
+  }
+  if (modo === "token") {
+    const res = await upload(destino(listo.name), listo, {
       access: "public",
       handleUploadUrl: "/api/admin/upload",
     });
@@ -58,7 +82,7 @@ export function ImageField({
   value: string;
   onChange: (v: string) => void;
   kind?: "image" | "video";
-  blob: boolean;
+  blob: UploadMode;
   gallery: string[];
 }) {
   const inputRef = React.useRef<HTMLInputElement>(null);

@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import {
+  handleUpload,
+  handleUploadPresigned,
+  type HandleUploadBody,
+} from "@vercel/blob/client";
+import { issueSignedToken } from "@vercel/blob";
+import { uploadMode } from "@/lib/upload-mode";
 import { isAuthenticated } from "@/lib/auth";
 
 // Subida de imágenes y videos desde el panel.
-// · Con Vercel Blob (BLOB_READ_WRITE_TOKEN): el navegador sube directo a Blob
-//   y esta ruta sólo firma el permiso (así no hay límite de 4,5 MB de Vercel).
+// · Con Vercel Blob: el navegador sube directo a Blob y esta ruta sólo firma
+//   el permiso (así no hay límite de 4,5 MB de Vercel). Con almacén OIDC
+//   (BLOB_STORE_ID) firma una URL; con BLOB_READ_WRITE_TOKEN, un token.
 // · En local sin Blob: recibe el archivo y lo guarda en public/uploads.
 
 const MAX = 50 * 1024 * 1024;
@@ -16,7 +23,29 @@ export async function POST(request: Request) {
   const type = request.headers.get("content-type") ?? "";
 
   if (type.includes("application/json")) {
-    const body = (await request.json()) as HandleUploadBody;
+    const raw = await request.json();
+    if (uploadMode() === "presigned") {
+      try {
+        const res = await handleUploadPresigned({
+          body: raw,
+          request,
+          getSignedToken: async (pathname) => {
+            if (!isAuthenticated()) throw new Error("Sesión vencida. Volvé a entrar.");
+            const token = await issueSignedToken({
+              pathname,
+              operations: ["put"],
+              allowedContentTypes: TYPES,
+              maximumSizeInBytes: MAX,
+            });
+            return { token };
+          },
+        });
+        return NextResponse.json(res);
+      } catch (e) {
+        return NextResponse.json({ error: (e as Error).message }, { status: 400 });
+      }
+    }
+    const body = raw as HandleUploadBody;
     try {
       const res = await handleUpload({
         body,
@@ -25,7 +54,7 @@ export async function POST(request: Request) {
         // del admin: por eso la sesión se comprueba sólo al firmar.
         onBeforeGenerateToken: async () => {
           if (!isAuthenticated()) throw new Error("Sesión vencida. Volvé a entrar.");
-          return { allowedContentTypes: TYPES, maximumSizeInBytes: MAX, addRandomSuffix: true };
+          return { allowedContentTypes: TYPES, maximumSizeInBytes: MAX };
         },
         onUploadCompleted: async () => {},
       });

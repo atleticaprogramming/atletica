@@ -2,6 +2,7 @@ import { StringListField, ModulesField } from "@/components/admin/Fields";
 import { ImageInput } from "@/components/admin/ImageInput";
 import { saveCourseAction, deleteCourseAction } from "@/app/admin/actions";
 import type { CourseData } from "@/lib/types";
+import type { UploadMode } from "@/lib/upload-mode";
 
 const input =
   "w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none focus:border-ink/40";
@@ -45,7 +46,7 @@ export function CourseForm({
   gallery,
 }: {
   course?: CourseData;
-  blob: boolean;
+  blob: UploadMode;
   gallery: string[];
 }) {
   const isEdit = Boolean(course);

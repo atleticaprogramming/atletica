@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import { ImageField } from "@/components/admin/ImageField";
+import type { UploadMode } from "@/lib/upload-mode";
 
 /** ImageField para formularios clásicos: guarda el valor en un input oculto. */
 export function ImageInput({
@@ -13,7 +14,7 @@ export function ImageInput({
   name: string;
   label: string;
   defaultValue?: string;
-  blob: boolean;
+  blob: UploadMode;
   gallery: string[];
 }) {
   const [value, setValue] = React.useState(defaultValue);

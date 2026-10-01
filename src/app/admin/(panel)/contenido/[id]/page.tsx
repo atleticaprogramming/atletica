@@ -1,3 +1,4 @@
+import { uploadMode } from "@/lib/upload-mode";
 import { notFound } from "next/navigation";
 import { getSectionDef } from "@/lib/site/schema";
 import { getSite, canSaveSite } from "@/lib/site/store";
@@ -28,7 +29,7 @@ export default async function EditarSeccion({ params }: { params: { id: string }
         initial={site[def.id] as Record<string, unknown>}
         href={def.href}
         canSave={canSaveSite()}
-        blob={Boolean(process.env.BLOB_READ_WRITE_TOKEN)}
+        blob={uploadMode()}
         gallery={gallery}
       />
     </div>

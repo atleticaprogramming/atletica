@@ -1,3 +1,4 @@
+import { uploadMode } from "@/lib/upload-mode";
 import { getGallery } from "@/lib/site/gallery";
 import { notFound } from "next/navigation";
 import { getCourse } from "@/lib/content";
@@ -23,7 +24,7 @@ export default async function EditarCurso({
       </div>
       <CourseForm
         course={course}
-        blob={Boolean(process.env.BLOB_READ_WRITE_TOKEN)}
+        blob={uploadMode()}
         gallery={await getGallery()}
       />
     </div>
